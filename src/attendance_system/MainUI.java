@@ -9,6 +9,9 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+
+import com.attendance.views.NewEmployeeForm;
+
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
@@ -57,11 +60,12 @@ public class MainUI {
 		JMenuItem mntmNewUser = new JMenuItem("New user");
 		mntmNewUser.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				new_user_form  form = new new_user_form();
+				NewEmployeeForm  form = new NewEmployeeForm();
 				form.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 				form.setVisible(true);
 			}
 		});
+		
 		mnUser.add(mntmNewUser);
 		
 		JMenu mnTag = new JMenu("Tag");
