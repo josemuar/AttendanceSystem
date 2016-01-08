@@ -11,9 +11,9 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import com.jgoodies.forms.layout.FormLayout;
-import com.attendace.tools.RegexValidationTools;
 import com.attendance.controller.EmployeeController;
 import com.attendance.models.Employee;
+import com.attendance.tools.RegexValidationTools;
 import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.RowSpec;
 import javax.swing.JLabel;
@@ -41,10 +41,10 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import attendance_system.TemplateForm;
 
 
-
-public class NewEmployeeForm extends JFrame {
+public class NewEmployeeForm extends TemplateForm {
 
 	private JPanel content_pane;
 	private JPanel panel_head;
@@ -69,6 +69,8 @@ public class NewEmployeeForm extends JFrame {
 	private ImageIcon success_icon;
 	
 	private String[] EmployeeTypes = {"Casual","Full-Time","Part-Time"};
+	
+	private GridBagConstraints gridConstraints;
 
 	/**
 	 * Create the frame.
@@ -84,7 +86,7 @@ public class NewEmployeeForm extends JFrame {
 		panel_footer = new JPanel(new GridLayout(1,2));
 		
 		
-		GridBagConstraints gridConstraints = new GridBagConstraints();
+		gridConstraints = new GridBagConstraints();
 		
 		warning_icon = new ImageIcon(this.getClass().getResource("/warning_icon.png"));
 		success_icon = new ImageIcon(this.getClass().getResource("/success_icon.png"));
@@ -202,6 +204,10 @@ public class NewEmployeeForm extends JFrame {
 		getContentPane().add(content_pane );
 		
 		
+		/**
+		 * This event handler allow to validate the First Name entry as the user is typing it.
+		 * according to the validation outcome, the system shows a proper icon (Success or Warning)
+		 */
 		textfirstname.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent e) {
@@ -223,6 +229,10 @@ public class NewEmployeeForm extends JFrame {
 			}
 		});
 		
+		/**
+		 * This event handler allow to validate the Last Name entry as the user is typing it.
+		 * according to the validation outcome, the system shows a proper icon (Success or Warning)
+		 */
 		textlastname.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent e) {
@@ -244,11 +254,16 @@ public class NewEmployeeForm extends JFrame {
 		});
 		
 		
+		/**
+		 * This event handler allow to validate the Email entry as the user is typing it.
+		 * according to the validation outcome, the system shows a proper icon (Success or Warning)
+		 */
 		textemail.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent e) {
 				
 				String email = textemail.getText();
+				textemail.setText(email.toLowerCase());
 				
 				if (email.matches(RegexValidationTools.EMAIL_PATTERN.toString()))
 				{
@@ -263,13 +278,14 @@ public class NewEmployeeForm extends JFrame {
 			}
 		});
 		
-	
-		
         // Reorganize the embedded components
 		pack();	
 	}
 	
 	
+	/**
+	 * @saveUser() saves the information filled up in the form by the user
+	 */
 	public void saveUser(){
 		
 		
@@ -280,25 +296,39 @@ public class NewEmployeeForm extends JFrame {
 		if (first_name.matches(RegexValidationTools.FIRST_NAME_PATTERN.toString())) {
 		
 			if (second_name.matches(RegexValidationTools.SECOND_NAME_PATTERN.toString())) {
-				System.out.println("success se");
-		
-				
+						
 				if (email.matches(RegexValidationTools.EMAIL_PATTERN.toString())) {
 					
 					Employee newEmployee = new Employee();
 					newEmployee.set_email(getTextemail().getText());
 					newEmployee.set_first_name(getTextfirstname().getText());
-					newEmployee.set_last_name(getTextsecondname().getText());
+					newEmployee.set_last_name(getTextlastname().getText());
 					newEmployee.set_type(getCombobox().getSelectedItem().toString());
 					
 					EmployeeController controller = new EmployeeController();
+					controller.setForm(this);
 					controller.newEmployee(newEmployee);
 							
 				}
 			}	
 		}
 	}
-
+	
+	/**
+	 * @clerAllFields() wipe out all the fields of the form
+	 */
+	public void clerAllFields() {
+		
+		this.getTextfirstname().setText("");
+		this.getTextlastname().setText("");
+		this.getTextemail().setText("");
+		this.getCombobox().setSelectedIndex(0);
+		
+		lblfirstname_icon.setVisible(false);
+		lbllastname_icon.setVisible(false);
+		lblemail_icon.setVisible(false);
+		
+	}
 
 	public JTextField getTextfirstname() {
 		return textfirstname;
@@ -310,12 +340,12 @@ public class NewEmployeeForm extends JFrame {
 	}
 
 
-	public JTextField getTextsecondname() {
+	public JTextField getTextlastname() {
 		return textlastname;
 	}
 
 
-	public void setTextsecondname(JTextField textsecondname) {
+	public void setTextlastname(JTextField textsecondname) {
 		this.textlastname = textsecondname;
 	}
 

@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
@@ -34,13 +35,12 @@ public class ApacheHttpClientPost {
 		
 		try {
 			
-			System.out.println(System.getProperty("java.classpath"));
-		
 			this._httpClient = HttpClientBuilder.create().build();
 			this._postRequest = new HttpPost( ApacheHttpClientPost._SERVER + ":" + ApacheHttpClientPost._PORT + "/" + RESTServiceDirectory._REGISTER_EMPLOYEE_SERVICE  );
 			this.get_postRequest().addHeader("content-type", "application/json");
 			this.get_postRequest().addHeader("Accept","application/json");	
-		
+			
+			
 
 		} catch (Exception e) {
 
@@ -77,7 +77,8 @@ public class ApacheHttpClientPost {
 	 */
 	public void sendHttpPostRequest()
 	{ 
-		try {
+		try 
+		{
 			
 			StringEntity se = new StringEntity(this.get_json_http_params().toString());
 			this.get_postRequest().setEntity(se);
@@ -88,6 +89,63 @@ public class ApacheHttpClientPost {
 			e.printStackTrace();
 		}
 		
+	}
+	
+
+	/**
+	 * @checkRestServiceAvailability this function allows to know if the service passed as parameter is available for use.
+	 * @param service_name whatever public  static attribute from the class @com.attendance.services.RESTServiceDirectory
+	 * @return true if service is available and false otherwise 
+	 */
+	public boolean checkRestServiceAvailability(String service_name) {
+	   
+		boolean result = true;
+		HttpPost postRequest;
+		HttpResponse httpResponse;
+		HttpClient httpClient;
+		JSONObject json_http_params = new JSONObject();
+		
+		String raw_response_from_server = "";
+		JSONObject json_response_from_server = new JSONObject();
+		String line = ""; //aux var
+		
+		try 
+		{		
+			httpClient = HttpClientBuilder.create().build();
+			postRequest = new HttpPost( ApacheHttpClientPost._SERVER + ":" + ApacheHttpClientPost._PORT + "/" + service_name );
+			postRequest.addHeader("content-type", "application/json");
+			postRequest.addHeader("Accept","application/json");	
+			json_http_params.put("request_purpose", "test_service" );  
+			StringEntity se = new StringEntity(json_http_params.toString());
+			postRequest.setEntity(se);
+			
+			httpResponse = httpClient.execute( postRequest);	
+			 
+			if (httpResponse.getStatusLine().getStatusCode() != 200) {
+					throw new RuntimeException("Failed : HTTP error code : "
+						+ httpResponse.getStatusLine().getStatusCode());
+			}
+
+			BufferedReader br = new BufferedReader( new InputStreamReader((httpResponse.getEntity().getContent())));
+
+			while ((line = br.readLine()) != null) {
+				raw_response_from_server += line;
+			}
+
+			json_response_from_server = new JSONObject(raw_response_from_server); 
+		}
+		
+		catch( ClientProtocolException e )
+		{
+			result = false;
+		}
+		
+		catch( IOException e ) 
+		{
+			result = false;
+		}
+		
+		return result;
 		
 	}
 

@@ -1,4 +1,4 @@
-package com.attendace.tools;
+package com.attendance.tools;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
