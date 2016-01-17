@@ -34,6 +34,7 @@ import java.awt.Color;
 import java.awt.Dialog;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.swing.JComboBox;
@@ -44,7 +45,7 @@ import java.awt.event.FocusEvent;
 import attendance_system.TemplateForm;
 
 
-public class NewEmployeeForm extends TemplateForm {
+public class UpdateEmployeeForm extends TemplateForm {
 
 	private JPanel content_pane;
 	private JPanel panel_head;
@@ -71,13 +72,13 @@ public class NewEmployeeForm extends TemplateForm {
 	private String[] EmployeeTypes = {"Casual","Full-Time","Part-Time"};
 	
 	private GridBagConstraints gridConstraints;
-	
 	public EmployeeController controller;
+	private HashMap hashMap;
 
 	/**
 	 * Create the frame.
 	 */
-	public NewEmployeeForm() {
+	public UpdateEmployeeForm() {
 		
 		setBounds(100, 100, 450, 200);
 		getContentPane().setLayout( new GridLayout(1,1) );
@@ -135,7 +136,7 @@ public class NewEmployeeForm extends TemplateForm {
 			}
 		});
 		
-		JLabel lblTitle = new JLabel("Register new Employee");
+		JLabel lblTitle = new JLabel("Update Information");
 		lblTitle.setHorizontalAlignment(SwingConstants.CENTER);
 		lblTitle.setFont(new Font("Dialog", Font.BOLD, 20));
 		panel_head.add(lblTitle);
@@ -310,6 +311,7 @@ public class NewEmployeeForm extends TemplateForm {
 						newEmployee.set_last_name(getTextlastname().getText());
 						newEmployee.set_type(getCombobox().getSelectedItem().toString());
 						
+						EmployeeController controller = new EmployeeController();
 						controller.setForm(this);
 						controller.newEmployee(newEmployee);
 								
@@ -319,8 +321,7 @@ public class NewEmployeeForm extends TemplateForm {
 		}
 		else
 		{
-			this.showWarningMessage("PLEASE PROVIDE THE INFORMATION REQUIRED IN THE FORM", "");
-			
+			this.showWarningMessage( "PLEASE PROVIDE THE INFORMATION REQUIRED IN THE FORM" , "");
 		}
 	}
 	
@@ -386,7 +387,16 @@ public class NewEmployeeForm extends TemplateForm {
 	public void setController(EmployeeController controller) {
 		this.controller = controller;
 	}
-	
+
+
+	public HashMap getHashMap() {
+		return hashMap;
+	}
+
+
+	public void setHashMap(HashMap hashMap) {
+		this.hashMap = hashMap;
+	}
 	
 	
 }

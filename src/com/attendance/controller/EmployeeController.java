@@ -7,13 +7,20 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
+import java.util.HashMap;
+
+import javax.swing.JFrame;
 
 import org.json.JSONObject;
 
+import com.attendance.models.Business;
 import com.attendance.models.Employee;
 import com.attendance.services.RESTServiceDirectory;
+import com.attendance.views.NewEmployeeForm;
+import com.attendance.views.UpdateEmployeeForm;
 
 import attendance_system.ApacheHttpClientPost;
+import attendance_system.MainUI;
 import attendance_system.TemplateForm;
 
 /**
@@ -25,6 +32,32 @@ public class EmployeeController {
 	
 	
 	private TemplateForm form; 
+	private MainUI mainUI;
+	
+	
+	/**
+	 * @newEmployeeForm: shows the Form to create a new Employee
+	 */
+	public void newEmployeeForm()
+	{
+		NewEmployeeForm  form = new NewEmployeeForm();
+		form.setController(this);
+		form.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		form.setVisible(true);
+	}
+	
+
+	/**
+	 * @updateEmployeeForm: shows the Form to update the information on a specific Employee
+	 */
+	public void updateEmployeeForm(HashMap hashMap)
+	{
+		UpdateEmployeeForm  form = new UpdateEmployeeForm();
+		form.setController(this);
+		form.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		form.setVisible(true);
+	}
+	
 	
 	
 	/**
@@ -35,10 +68,11 @@ public class EmployeeController {
 	public void newEmployee(Employee employee)
 	{
 		
-		String line = ""; //aux var
+		String line = "";
 		String raw_response_from_server = "";
 		String outcome = "";
 		JSONObject json_response_from_server = new JSONObject();
+		Business business = new Business();
 		
 		
 		try
@@ -48,7 +82,7 @@ public class EmployeeController {
 			client.addPostParameter("first_name", employee.get_first_name() );
 			client.addPostParameter("last_name", employee.get_last_name() );
 			client.addPostParameter("email", employee.get_email() );
-			client.addPostParameter("type", employee.get_type() );
+			client.addPostParameter("business_id", business.get_ID() );
 			client.addPostParameter("type", employee.get_type() );
 			client.addPostParameter("request_purpose", "register_employee" );
 			
@@ -91,6 +125,7 @@ public class EmployeeController {
 					{
 						this.form.showInformationMessage("THE RECORD WAS SAVED SUCCESFULLY", "");
 						this.form.clerAllFields();
+						this.getMainUI().updateEmployeeTableComponent();
 					}
 				}
 				else
@@ -109,20 +144,12 @@ public class EmployeeController {
 				this.form.showErrorMessage("THE REQUIRED SERVICE IS CURRENTLY DOWN", "");
 			}
 				
-			
 		} 
-		
 		catch (Exception e) 
-		
 		{
-
 			System.out.println(e.getMessage());
 		}
-		
-		
-		//System.out.println( json_from_server.get("result") );
-		
-		
+				
 	}
 	
 	
@@ -133,6 +160,18 @@ public class EmployeeController {
 
 	public void setForm(TemplateForm form) {
 		this.form = form;
+	}
+
+
+
+	public MainUI getMainUI() {
+		return mainUI;
+	}
+
+
+
+	public void setMainUI(MainUI mainUI) {
+		this.mainUI = mainUI;
 	}
 	
 	
