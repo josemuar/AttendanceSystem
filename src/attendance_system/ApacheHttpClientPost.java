@@ -31,12 +31,12 @@ public class ApacheHttpClientPost {
 	/**
 	 * Constructor
 	 */
-	public ApacheHttpClientPost() { 
+	public ApacheHttpClientPost(String service_name) { 
 		
 		try {
 			
 			this._httpClient = HttpClientBuilder.create().build();
-			this._postRequest = new HttpPost( ApacheHttpClientPost._SERVER + ":" + ApacheHttpClientPost._PORT + "/" + RESTServiceDirectory._REGISTER_EMPLOYEE_SERVICE  );
+			this._postRequest = new HttpPost( ApacheHttpClientPost._SERVER + ":" + ApacheHttpClientPost._PORT + "/" + service_name );
 			this.get_postRequest().addHeader("content-type", "application/json");
 			this.get_postRequest().addHeader("Accept","application/json");	
 			

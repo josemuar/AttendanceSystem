@@ -54,16 +54,19 @@ public class NewEmployeeForm extends TemplateForm {
 	private JTextField textfirstname;
 	private JTextField textlastname;
 	private JTextField textemail;
+	private JTextField textemail_confirm;
 	private JComboBox combobox;
 	
 	private JLabel lblfirstname  ;
 	private JLabel lbllastname ;
 	private JLabel lblemail ;
+	private JLabel lblemail_confirm ;
 	private JLabel lblComboBox;
 	
 	private JLabel lblfirstname_icon  ;
 	private JLabel lbllastname_icon ;
 	private JLabel lblemail_icon ;
+	private JLabel lblemail_icon_confirm ;
 	
 	private ImageIcon warning_icon;
 	private ImageIcon success_icon;
@@ -79,7 +82,6 @@ public class NewEmployeeForm extends TemplateForm {
 	 */
 	public NewEmployeeForm() {
 		
-		setBounds(100, 100, 450, 200);
 		getContentPane().setLayout( new GridLayout(1,1) );
 		
 		content_pane = new JPanel(new BorderLayout() );
@@ -87,13 +89,12 @@ public class NewEmployeeForm extends TemplateForm {
 		panel_body = new JPanel(new GridBagLayout());
 		panel_footer = new JPanel(new GridLayout(1,2));
 		
-		
 		gridConstraints = new GridBagConstraints();
 		
 		warning_icon = new ImageIcon(this.getClass().getResource("/warning_icon.png"));
 		success_icon = new ImageIcon(this.getClass().getResource("/success_icon.png"));
 		
-		panel_body.setPreferredSize(new Dimension(450, 200));
+		panel_body.setPreferredSize(new Dimension(450, 250));
 		panel_footer.setPreferredSize(new Dimension(450, 50));
 		content_pane.setBorder(new EmptyBorder(10, 10, 10, 10));
 		panel_body.setBorder(new EmptyBorder(10, 10, 10, 10));
@@ -101,6 +102,7 @@ public class NewEmployeeForm extends TemplateForm {
 		lblfirstname  = new JLabel ( "First Name" );
 		lbllastname = new JLabel ( "Last Name" );
 		lblemail = new JLabel("Email");
+		lblemail_confirm = new JLabel("Confirm Email");
 		lblComboBox = new JLabel("Employee Type");
 		
 		lblfirstname_icon  = new JLabel();
@@ -115,10 +117,15 @@ public class NewEmployeeForm extends TemplateForm {
 		lblemail_icon.setPreferredSize(new Dimension(30, 25));
 		lblemail_icon.setVisible(false);
 		
+		lblemail_icon_confirm = new JLabel();
+		lblemail_icon_confirm.setPreferredSize(new Dimension(30, 25));
+		lblemail_icon_confirm.setVisible(false);
+		
 		textfirstname = new JTextField();
 		textlastname = new JTextField();
 		textemail = new JTextField();
 		combobox = new JComboBox( EmployeeTypes );
+		textemail_confirm = new JTextField();
 		
 		JButton btnSave = new JButton("Save");
 		btnSave.addActionListener(new ActionListener() {
@@ -190,10 +197,25 @@ public class NewEmployeeForm extends TemplateForm {
 		
 		gridConstraints.gridx = 0;
 		gridConstraints.gridy = 3;
-		panel_body.add( lblComboBox, gridConstraints );
+		gridConstraints.weightx = 1;
+		panel_body.add( lblemail_confirm  , gridConstraints);
 		
 		gridConstraints.gridx = 1;
 		gridConstraints.gridy = 3;
+		gridConstraints.weightx = 1;
+		panel_body.add( textemail_confirm , gridConstraints );
+		
+		gridConstraints.gridx = 2;
+		gridConstraints.gridy = 3;
+		gridConstraints.weightx = 0;
+		panel_body.add( lblemail_icon_confirm  , gridConstraints);
+		
+		gridConstraints.gridx = 0;
+		gridConstraints.gridy = 4;
+		panel_body.add( lblComboBox, gridConstraints );
+		
+		gridConstraints.gridx = 1;
+		gridConstraints.gridy = 4;
 		gridConstraints.gridwidth = 2;
 		panel_body.add( combobox, gridConstraints );
 		
@@ -280,6 +302,31 @@ public class NewEmployeeForm extends TemplateForm {
 			}
 		});
 		
+		/**
+		 * This event handler allow to validate the Email Confirm entry as the user is typing it.
+		 * according to the validation outcome, the system shows a proper icon (Success or Warning)
+		 */
+		textemail_confirm.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent e) {
+				
+				String email = textemail.getText();
+				String email_confirm = textemail_confirm.getText();
+				textemail_confirm.setText(email_confirm.toLowerCase());
+				
+				if (email.equals(email_confirm))
+				{
+					lblemail_icon_confirm.setIcon(success_icon);
+					lblemail_icon_confirm.setVisible(true);
+				}
+				else
+				{
+					lblemail_icon_confirm.setIcon(warning_icon);
+					lblemail_icon_confirm.setVisible(true);
+				}
+			}
+		});
+		
         // Reorganize the embedded components
 		pack();	
 	}
@@ -294,6 +341,7 @@ public class NewEmployeeForm extends TemplateForm {
 		String first_name = textfirstname.getText();
 		String last_name = textlastname.getText();
 		String email = textemail.getText();
+		String email_confirm = textemail_confirm.getText();
 		
 		if( first_name.length() > 0 & last_name.length() > 0 & email.length() >0   )
 		{
@@ -304,15 +352,17 @@ public class NewEmployeeForm extends TemplateForm {
 							
 					if (email.matches(RegexValidationTools.EMAIL_PATTERN.toString())) {
 						
-						Employee newEmployee = new Employee();
-						newEmployee.set_email(getTextemail().getText());
-						newEmployee.set_first_name(getTextfirstname().getText());
-						newEmployee.set_last_name(getTextlastname().getText());
-						newEmployee.set_type(getCombobox().getSelectedItem().toString());
+						if (email.equals(email_confirm)){
 						
-						controller.setForm(this);
-						controller.newEmployee(newEmployee);
-								
+							Employee newEmployee = new Employee();
+							newEmployee.set_email(getTextemail().getText());
+							newEmployee.set_first_name(getTextfirstname().getText());
+							newEmployee.set_last_name(getTextlastname().getText());
+							newEmployee.set_type(getCombobox().getSelectedItem().toString());
+							
+							controller.setForm(this);
+							controller.newEmployee(newEmployee);
+						}
 					}
 				}	
 			}
@@ -386,7 +436,19 @@ public class NewEmployeeForm extends TemplateForm {
 	public void setController(EmployeeController controller) {
 		this.controller = controller;
 	}
-	
+
+
+	public JTextField getTextemail_confirm() {
+		return textemail_confirm;
+	}
+
+
+	public void setTextemail_confirm(JTextField textemail_confirm) {
+		this.textemail_confirm = textemail_confirm;
+	}
+
+
+
 	
 	
 }

@@ -54,6 +54,7 @@ public class EmployeeController {
 	{
 		UpdateEmployeeForm  form = new UpdateEmployeeForm();
 		form.setController(this);
+		form.setHashMap(hashMap);
 		form.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		form.setVisible(true);
 	}
@@ -78,7 +79,7 @@ public class EmployeeController {
 		try
 		{
 		
-			ApacheHttpClientPost client = new ApacheHttpClientPost();
+			ApacheHttpClientPost client = new ApacheHttpClientPost(RESTServiceDirectory._REGISTER_EMPLOYEE_SERVICE);
 			client.addPostParameter("first_name", employee.get_first_name() );
 			client.addPostParameter("last_name", employee.get_last_name() );
 			client.addPostParameter("email", employee.get_email() );
@@ -152,6 +153,99 @@ public class EmployeeController {
 				
 	}
 	
+	
+	/**
+	 * @updateEmployee: allows to update a employee information
+	 * @return void 
+	 * @param employese: the Employee instance which contains the new values
+	 */
+	public void updateEmployee(Employee employee)
+	{
+		
+		String line = "";
+		String raw_response_from_server = "";
+		String outcome = "";
+		JSONObject json_response_from_server = new JSONObject();
+		Business business = new Business();
+		
+		
+		try
+		{
+		
+			ApacheHttpClientPost client = new ApacheHttpClientPost(RESTServiceDirectory._UPDATE_EMPLOYEE_INFORMATION_SERVICE);
+			//email field cannot be update or changed as it is the primary key( in Dynamo DB schema). as a result, email is not send in the request
+			client.addPostParameter("email", employee.get_email() );
+			client.addPostParameter("first_name", employee.get_first_name() );
+			client.addPostParameter("last_name", employee.get_last_name() );
+			client.addPostParameter("type", employee.get_type() );
+			client.addPostParameter("request_purpose", "update_employee" );
+			
+			
+			if( client.checkRestServiceAvailability( RESTServiceDirectory._UPDATE_EMPLOYEE_INFORMATION_SERVICE) )
+			{
+				
+				client.sendHttpPostRequest();
+				
+				if (client.getHttpResponse().getStatusLine().getStatusCode() != 200) {
+						throw new RuntimeException("Failed : HTTP error code : " 
+								+ client.getHttpResponse().getStatusLine().getStatusCode());
+				}
+		
+				BufferedReader br = new BufferedReader( new InputStreamReader((client.getHttpResponse().getEntity().getContent())));
+		
+				while ((line = br.readLine()) != null){
+					raw_response_from_server += line;
+				}
+		
+				json_response_from_server = new JSONObject(raw_response_from_server); 
+				
+				if ( json_response_from_server.has("outcome") )
+				{
+					outcome = json_response_from_server.get("outcome").toString();
+					
+					if (outcome.equals("technical_error") )
+					{
+						this.form.showErrorMessage("THE RECORD WAS NOT UPDATED. PLEASE CONTACT TECHNICAL SUPPORT.", "");
+						System.out.println(json_response_from_server.get("error").toString());
+						
+					}
+					
+					if (outcome.equals("duplicity_error") )
+					{
+						
+						this.form.showErrorMessage("THE RECORD WAS NOT SAVED. THE EMAIL GIVEN IS ALREADY STORED", "");
+					}
+					
+					if (outcome.equals("true") )
+					{
+						this.form.showInformationMessage("THE RECORD WAS SUCCESFULLY UPDATED", "");
+						this.form.clerAllFields();
+						this.getMainUI().updateEmployeeTableComponent();
+					}
+				}
+				else
+				{
+					
+					this.form.showErrorMessage("NO RESPONSE WAS RECEIVED FROM THE SERVICE. PLEASE CONTACT TECHNICAL SUPPORT", "");
+				}
+				
+		
+				client.get_httpClient().getConnectionManager().shutdown();
+			}
+			
+			else
+				
+			{
+				this.form.showErrorMessage("THE REQUIRED SERVICE IS CURRENTLY DOWN", "");
+			}
+				
+		} 
+		catch (Exception e) 
+		{
+			System.out.println(e.getMessage());
+		}
+				
+	}
 	
 	public TemplateForm getForm() {
 		return form;

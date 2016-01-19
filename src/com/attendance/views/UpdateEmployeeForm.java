@@ -35,6 +35,9 @@ import java.awt.Dialog;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.swing.JComboBox;
@@ -44,7 +47,9 @@ import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import attendance_system.TemplateForm;
 
-
+/*
+ * @ UpdateEmployeeForm represent the Form which is in charge for allow to modify employee's data.
+ */
 public class UpdateEmployeeForm extends TemplateForm {
 
 	private JPanel content_pane;
@@ -68,8 +73,6 @@ public class UpdateEmployeeForm extends TemplateForm {
 	
 	private ImageIcon warning_icon;
 	private ImageIcon success_icon;
-	
-	private String[] EmployeeTypes = {"Casual","Full-Time","Part-Time"};
 	
 	private GridBagConstraints gridConstraints;
 	public EmployeeController controller;
@@ -119,7 +122,13 @@ public class UpdateEmployeeForm extends TemplateForm {
 		textfirstname = new JTextField();
 		textlastname = new JTextField();
 		textemail = new JTextField();
-		combobox = new JComboBox( EmployeeTypes );
+		
+		
+		combobox = new JComboBox( );
+		combobox.addItem( "Casual" );
+		combobox.addItem( "Full-Time" );
+		combobox.addItem( "Part-Time" );
+		
 		
 		JButton btnSave = new JButton("Save");
 		btnSave.addActionListener(new ActionListener() {
@@ -208,7 +217,7 @@ public class UpdateEmployeeForm extends TemplateForm {
 		
 		
 		/**
-		 * This event handler allow to validate the First Name entry as the user is typing it.
+		 * This event handler allows to validate the First Name entry as the user is typing it.
 		 * according to the validation outcome, the system shows a proper icon (Success or Warning)
 		 */
 		textfirstname.addKeyListener(new KeyAdapter() {
@@ -233,7 +242,7 @@ public class UpdateEmployeeForm extends TemplateForm {
 		});
 		
 		/**
-		 * This event handler allow to validate the Last Name entry as the user is typing it.
+		 * This event handler allows to validate the Last Name entry as the user is typing it.
 		 * according to the validation outcome, the system shows a proper icon (Success or Warning)
 		 */
 		textlastname.addKeyListener(new KeyAdapter() {
@@ -258,7 +267,7 @@ public class UpdateEmployeeForm extends TemplateForm {
 		
 		
 		/**
-		 * This event handler allow to validate the Email entry as the user is typing it.
+		 * This event handler allows to validate the Email entry as the user is typing it.
 		 * according to the validation outcome, the system shows a proper icon (Success or Warning)
 		 */
 		textemail.addKeyListener(new KeyAdapter() {
@@ -287,7 +296,8 @@ public class UpdateEmployeeForm extends TemplateForm {
 	
 	
 	/**
-	 * @saveUser() saves the information filled up in the form by the user
+	 * @saveUser 
+	 * updates current employee's information with  the information filled up in the form by the user
 	 */
 	public void saveUser(){
 		
@@ -305,15 +315,15 @@ public class UpdateEmployeeForm extends TemplateForm {
 							
 					if (email.matches(RegexValidationTools.EMAIL_PATTERN.toString())) {
 						
-						Employee newEmployee = new Employee();
-						newEmployee.set_email(getTextemail().getText());
-						newEmployee.set_first_name(getTextfirstname().getText());
-						newEmployee.set_last_name(getTextlastname().getText());
-						newEmployee.set_type(getCombobox().getSelectedItem().toString());
+						Employee employee = new Employee();
+						employee.set_email(getTextemail().getText());
+						employee.set_first_name(getTextfirstname().getText());
+						employee.set_last_name(getTextlastname().getText());
+						employee.set_type(getCombobox().getSelectedItem().toString());
 						
 						EmployeeController controller = new EmployeeController();
 						controller.setForm(this);
-						controller.newEmployee(newEmployee);
+						controller.updateEmployee(employee);
 								
 					}
 				}	
@@ -326,7 +336,8 @@ public class UpdateEmployeeForm extends TemplateForm {
 	}
 	
 	/**
-	 * @clerAllFields() wipe out all the fields of the form
+	 * @clerAllFields 
+	 * wipe out all the fields of the form
 	 */
 	public void clerAllFields() {
 		
@@ -339,6 +350,21 @@ public class UpdateEmployeeForm extends TemplateForm {
 		lbllastname_icon.setVisible(false);
 		lblemail_icon.setVisible(false);
 		
+	}
+	
+	/**
+	 * @setHashMap
+	 * This function allows to set up the values in the field's Form, Through a hashMap Object.
+	 */
+	public void setHashMap(HashMap hashMap) {
+		this.hashMap = hashMap;
+		
+		//Populating the field's form with the data of the employee who is subject to update.
+		this.getTextfirstname().setText( getHashMap().get("first_name").toString() );
+		this.getTextlastname().setText( getHashMap().get("last_name").toString() );
+		this.getTextemail().setText( getHashMap().get("email").toString() );
+		this.getCombobox().setSelectedItem(getHashMap().get("type").toString());
+
 	}
 
 	public JTextField getTextfirstname() {
@@ -391,11 +417,6 @@ public class UpdateEmployeeForm extends TemplateForm {
 
 	public HashMap getHashMap() {
 		return hashMap;
-	}
-
-
-	public void setHashMap(HashMap hashMap) {
-		this.hashMap = hashMap;
 	}
 	
 	

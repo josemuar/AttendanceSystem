@@ -51,6 +51,7 @@ public class MainUI {
 					window.frame.setVisible(true);
 					
 				} catch (Exception e) {
+					System.out.println(e.getMessage());
 					e.printStackTrace();
 				}
 			}
@@ -82,6 +83,7 @@ public class MainUI {
 		table = new EmployeeTable();
 		table.setController(this.getController());
 		table.populate();
+		
 		
 		ButtonRenderer delete_btn =  new ButtonRenderer();
 		delete_btn.setImage_icon( new ImageIcon(this.getClass().getResource("/trash_icon.png")) );
@@ -156,10 +158,23 @@ public class MainUI {
 	{
 		
 		this.getTable().populate();
-		this.getTable().getColumn("Delete").setCellRenderer(new ButtonRenderer() );
-		this.getTable().getColumn("Delete").setCellEditor(new ButtonEditor(new JCheckBox()));
-		this.getTable().getColumn("Edit").setCellRenderer(new ButtonRenderer() );
-		this.getTable().getColumn("Edit").setCellEditor(new ButtonEditor(new JCheckBox()));
+		
+		ButtonRenderer delete_btn =  new ButtonRenderer();
+		delete_btn.setImage_icon( new ImageIcon(this.getClass().getResource("/trash_icon.png")) );
+		table.getColumn("Delete").setCellRenderer( delete_btn );
+		table.getColumn("Delete").setPreferredWidth(20);
+		ButtonEditor editor_delete_btn = new ButtonEditor(new JCheckBox());
+		editor_delete_btn.setController(this.getController());
+		table.getColumn("Delete").setCellEditor(editor_delete_btn);
+		
+		
+		ButtonRenderer update_btn =  new ButtonRenderer();
+		update_btn.setImage_icon( new ImageIcon(this.getClass().getResource("/update_icon.png")) );
+		table.getColumn("Edit").setCellRenderer( update_btn );
+		table.getColumn("Edit").setPreferredWidth(20);
+		ButtonEditor editor_edit_btn = new ButtonEditor(new JCheckBox());
+		editor_edit_btn.setController(this.getController());
+		table.getColumn("Edit").setCellEditor(editor_edit_btn);
 		
 	}
 

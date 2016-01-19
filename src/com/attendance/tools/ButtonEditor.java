@@ -54,7 +54,7 @@ public class ButtonEditor extends DefaultCellEditor {
 		hash_map.put("first_name", table.getModel().getValueAt(row, 0).toString()); 
 		hash_map.put("last_name", table.getModel().getValueAt(row, 1).toString()); 
 		hash_map.put("email", table.getModel().getValueAt(row, 2).toString()); 
-		hash_map.put("type", table.getModel().getValueAt(row, 3).toString()); 
+		hash_map.put("type", table.getModel().getValueAt(row, 4).toString()); 
 		
 		
 		
