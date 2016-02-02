@@ -50,7 +50,7 @@ import attendance_system.TemplateForm;
 /*
  * @ UpdateEmployeeForm represent the Form which is in charge for allow to modify employee's data.
  */
-public class UpdateEmployeeForm extends TemplateForm {
+public class DeleteEmployeeForm extends TemplateForm {
 
 	private JPanel content_pane;
 	private JPanel panel_head;
@@ -81,7 +81,7 @@ public class UpdateEmployeeForm extends TemplateForm {
 	/**
 	 * Create the frame.
 	 */
-	public UpdateEmployeeForm() {
+	public DeleteEmployeeForm() {
 		
 		setBounds(100, 100, 450, 200);
 		getContentPane().setLayout( new GridLayout(1,1) );
@@ -107,20 +107,11 @@ public class UpdateEmployeeForm extends TemplateForm {
 		lblemail = new JLabel("Email");
 		lblComboBox = new JLabel("Employee Type");
 		
-		lblfirstname_icon  = new JLabel();
-		lblfirstname_icon.setPreferredSize(new Dimension(30, 25));
-		lblfirstname_icon.setVisible(false);
-		
-		lbllastname_icon = new JLabel();
-		lbllastname_icon.setPreferredSize(new Dimension(30, 25));
-		lbllastname_icon.setVisible(false);
-		
-		lblemail_icon = new JLabel();
-		lblemail_icon.setPreferredSize(new Dimension(30, 25));
-		lblemail_icon.setVisible(false);
-		
+				
 		textfirstname = new JTextField();
+		textfirstname.setEditable(false);
 		textlastname = new JTextField();
+		textlastname.setEditable(false);
 		textemail = new JTextField();
 		textemail.setEditable(false);
 		
@@ -129,9 +120,10 @@ public class UpdateEmployeeForm extends TemplateForm {
 		combobox.addItem( "Casual" );
 		combobox.addItem( "Full-Time" );
 		combobox.addItem( "Part-Time" );
+		combobox.setEnabled(false);
 		
 		
-		JButton btnSave = new JButton("Save");
+		JButton btnSave = new JButton("Delete");
 		btnSave.addActionListener(new ActionListener() {
 			
 			public void actionPerformed(ActionEvent e) {
@@ -146,7 +138,7 @@ public class UpdateEmployeeForm extends TemplateForm {
 			}
 		});
 		
-		JLabel lblTitle = new JLabel("Update Information");
+		JLabel lblTitle = new JLabel("Delete Employee");
 		lblTitle.setHorizontalAlignment(SwingConstants.CENTER);
 		lblTitle.setFont(new Font("Dialog", Font.BOLD, 20));
 		panel_head.add(lblTitle);
@@ -164,11 +156,7 @@ public class UpdateEmployeeForm extends TemplateForm {
 		gridConstraints.weightx = 1;
 		panel_body.add( textfirstname , gridConstraints);
 		
-		gridConstraints.gridx = 2;
-		gridConstraints.gridy = 0;
-		gridConstraints.weightx = 0;
-		panel_body.add( lblfirstname_icon  , gridConstraints);
-		
+	
 		gridConstraints.gridx = 0;
 		gridConstraints.gridy = 1;
 		gridConstraints.weightx = 1;
@@ -179,10 +167,6 @@ public class UpdateEmployeeForm extends TemplateForm {
 		gridConstraints.weightx = 1;
 		panel_body.add( textlastname , gridConstraints );
 		
-		gridConstraints.gridx = 2;
-		gridConstraints.gridy = 1;
-		gridConstraints.weightx = 0;
-		panel_body.add( lbllastname_icon , gridConstraints );
 		
 		gridConstraints.gridx = 0;
 		gridConstraints.gridy = 2;
@@ -194,10 +178,6 @@ public class UpdateEmployeeForm extends TemplateForm {
 		gridConstraints.weightx = 1;
 		panel_body.add( textemail , gridConstraints );
 		
-		gridConstraints.gridx = 2;
-		gridConstraints.gridy = 2;
-		gridConstraints.weightx = 0;
-		panel_body.add( lblemail_icon  , gridConstraints);
 		
 		gridConstraints.gridx = 0;
 		gridConstraints.gridy = 3;
@@ -217,79 +197,7 @@ public class UpdateEmployeeForm extends TemplateForm {
 		getContentPane().add(content_pane );
 		
 		
-		/**
-		 * This event handler allows to validate the First Name entry as the user is typing it.
-		 * according to the validation outcome, the system shows a proper icon (Success or Warning)
-		 */
-		textfirstname.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyReleased(KeyEvent e) {
-				
-				textfirstname.setText(textfirstname.getText().toUpperCase());
-				String first_name = textfirstname.getText();
-				
-				if (first_name.matches(RegexValidationTools.FIRST_NAME_PATTERN.toString()))
-				{
-					lblfirstname_icon.setIcon(success_icon);
-					lblfirstname_icon.setVisible(true);
-				}
-				else
-				{
-					lblfirstname_icon.setIcon(warning_icon);
-					lblfirstname_icon.setVisible(true);
-				}
-					
-			}
-		});
 		
-		/**
-		 * This event handler allows to validate the Last Name entry as the user is typing it.
-		 * according to the validation outcome, the system shows a proper icon (Success or Warning)
-		 */
-		textlastname.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyReleased(KeyEvent e) {
-				textlastname.setText(textlastname.getText().toUpperCase());
-				String last_name = textlastname.getText();
-				
-				if (last_name.matches(RegexValidationTools.SECOND_NAME_PATTERN.toString()))
-				{
-					lbllastname_icon.setIcon(success_icon);
-					lbllastname_icon.setVisible(true);
-				}
-				else
-				{
-					lbllastname_icon.setIcon(warning_icon);
-					lbllastname_icon.setVisible(true);
-				}
-				
-			}
-		});
-		
-		
-		/**
-		 * This event handler allows to validate the Email entry as the user is typing it.
-		 * according to the validation outcome, the system shows a proper icon (Success or Warning)
-		 */
-		textemail.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyReleased(KeyEvent e) {
-				
-				String email = textemail.getText();
-				textemail.setText(email.toLowerCase());
-				
-				if (email.matches(RegexValidationTools.EMAIL_PATTERN.toString()))
-				{
-					lblemail_icon.setIcon(success_icon);
-					lblemail_icon.setVisible(true);
-				}
-				else
-				{
-					lblemail_icon.setIcon(warning_icon);
-					lblemail_icon.setVisible(true);
-				}
-			}
-		});
 		
         // Reorganize the embedded components
 		pack();	
@@ -323,7 +231,7 @@ public class UpdateEmployeeForm extends TemplateForm {
 						employee.set_type(getCombobox().getSelectedItem().toString());
 						
 						this.getController().setForm(this);
-						this.getController().updateEmployee(employee);
+						this.getController().deleteEmployee(employee);
 								
 					}
 				}	

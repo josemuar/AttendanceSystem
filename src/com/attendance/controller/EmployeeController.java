@@ -16,6 +16,7 @@ import org.json.JSONObject;
 import com.attendance.models.Business;
 import com.attendance.models.Employee;
 import com.attendance.services.RESTServiceDirectory;
+import com.attendance.views.DeleteEmployeeForm;
 import com.attendance.views.NewEmployeeForm;
 import com.attendance.views.UpdateEmployeeForm;
 
@@ -33,6 +34,10 @@ public class EmployeeController {
 	
 	private TemplateForm form; 
 	private MainUI mainUI;
+	
+	
+	
+	
 	
 	
 	/**
@@ -53,6 +58,19 @@ public class EmployeeController {
 	public void updateEmployeeForm(HashMap hashMap)
 	{
 		UpdateEmployeeForm  form = new UpdateEmployeeForm();
+		form.setController(this);
+		form.setHashMap(hashMap);
+		form.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		form.setVisible(true);
+	}
+	
+	
+	/**
+	 * @deleteEmployeeForm: shows the Form to delete an Employee from the system
+	 */
+	public void deleteEmployeeForm(HashMap hashMap)
+	{
+		DeleteEmployeeForm  form = new DeleteEmployeeForm();
 		form.setController(this);
 		form.setHashMap(hashMap);
 		form.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -173,7 +191,6 @@ public class EmployeeController {
 		{
 		
 			ApacheHttpClientPost client = new ApacheHttpClientPost(RESTServiceDirectory._UPDATE_EMPLOYEE_INFORMATION_SERVICE);
-			//email field cannot be update or changed as it is the primary key( in Dynamo DB schema). as a result, email is not send in the request
 			client.addPostParameter("email", employee.get_email() );
 			client.addPostParameter("first_name", employee.get_first_name() );
 			client.addPostParameter("last_name", employee.get_last_name() );
@@ -219,9 +236,102 @@ public class EmployeeController {
 					if (outcome.equals("true") )
 					{
 						this.form.showInformationMessage("THE RECORD WAS SUCCESFULLY UPDATED", "");
-						this.form.clerAllFields();
 						this.getMainUI().updateEmployeeTableComponent();
 					}
+				}
+				else
+				{
+					
+					this.form.showErrorMessage("NO RESPONSE WAS RECEIVED FROM THE SERVICE. PLEASE CONTACT TECHNICAL SUPPORT", "");
+				}
+				
+		
+				client.get_httpClient().getConnectionManager().shutdown();
+			}
+			
+			else
+				
+			{
+				this.form.showErrorMessage("THE REQUIRED SERVICE IS CURRENTLY DOWN", "");
+			}
+				
+		} 
+		catch (Exception e) 
+		{
+			System.out.println(e.getMessage());
+		}
+				
+	}
+	
+	
+	/**
+	 * @deleteEmployee: allows to delete an Employee from the system
+	 * @return void 
+	 * @param employese: the Employee instance with the information of the employee who needs no be deleted
+	 */
+	public void deleteEmployee(Employee employee)
+	{
+		
+		String line = "";
+		String raw_response_from_server = "";
+		String outcome = "";
+		JSONObject json_response_from_server = new JSONObject();
+		Business business = new Business();
+		
+		
+		try
+		{
+		
+			ApacheHttpClientPost client = new ApacheHttpClientPost(RESTServiceDirectory._DELETE_EMPLOYEE_SERVICE);
+			client.addPostParameter("email", employee.get_email() );
+			client.addPostParameter("first_name", employee.get_first_name() );
+			client.addPostParameter("last_name", employee.get_last_name() );
+			client.addPostParameter("type", employee.get_type() );
+			client.addPostParameter("request_purpose", "delete_employee" );
+			
+			
+			if( client.checkRestServiceAvailability( RESTServiceDirectory._DELETE_EMPLOYEE_SERVICE) )
+			{
+				
+				client.sendHttpPostRequest();
+				
+				if (client.getHttpResponse().getStatusLine().getStatusCode() != 200) {
+						throw new RuntimeException("Failed : HTTP error code : " 
+								+ client.getHttpResponse().getStatusLine().getStatusCode());
+				}
+		
+				BufferedReader br = new BufferedReader( new InputStreamReader((client.getHttpResponse().getEntity().getContent())));
+		
+				while ((line = br.readLine()) != null){
+					raw_response_from_server += line;
+				}
+		
+				json_response_from_server = new JSONObject(raw_response_from_server); 
+				
+				if ( json_response_from_server.has("outcome") )
+				{
+					outcome = json_response_from_server.get("outcome").toString();
+					
+					if (outcome.equals("technical_error") )
+					{
+						this.form.showErrorMessage("THE RECORD WAS NOT DELETE. PLEASE CONTACT TECHNICAL SUPPORT.", "");
+						System.out.println(json_response_from_server.get("error").toString());						
+					}
+					
+					if (outcome.equals("non_existent_record") )
+					{
+						this.form.showErrorMessage("NON EXISTENT RECORD", "");
+						System.out.println(json_response_from_server.get("error").toString());						
+					}
+					
+
+					if (outcome.equals("true") )
+					{
+						this.form.showInformationMessage("THE RECORD WAS SUCCESFULLY DELETE", "");
+						this.getMainUI().updateEmployeeTableComponent();
+					}
+					
+					
 				}
 				else
 				{

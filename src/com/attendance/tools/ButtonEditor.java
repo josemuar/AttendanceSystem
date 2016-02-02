@@ -56,9 +56,20 @@ public class ButtonEditor extends DefaultCellEditor {
 		hash_map.put("email", table.getModel().getValueAt(row, 2).toString()); 
 		hash_map.put("type", table.getModel().getValueAt(row, 4).toString()); 
 		
+		System.out.println(value.toString());
 		
+		if (value.toString().equals(new String("Edit")))
+		{
+			this.getController().updateEmployeeForm(hash_map);
+			
+		}
 		
-		this.getController().updateEmployeeForm(hash_map);
+		if (value.toString().equals(new String("Delete")))
+		{
+			this.getController().deleteEmployeeForm(hash_map);
+			
+		}
+		
 		
 
 	    isPushed = true;

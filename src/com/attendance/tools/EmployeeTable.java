@@ -47,7 +47,7 @@ public class EmployeeTable extends JTable {
 	
 	
 	/**
-	 * @populate: populate the table with elements. actually registered employees in the system.
+	 * @populate: populate the table with elements. Registered employees in the system.
 	 * @return void 
 	 */
 	public void populate()
