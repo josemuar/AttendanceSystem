@@ -43,7 +43,9 @@ import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import attendance_system.TemplateForm;
 
-
+/*
+ * @NewEmployeeForm represent the Form which is in charge for allow add a  new Employee.
+ */
 public class NewEmployeeForm extends TemplateForm {
 
 	private JPanel content_pane;

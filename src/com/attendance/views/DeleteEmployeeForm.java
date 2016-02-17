@@ -48,7 +48,7 @@ import java.awt.event.FocusEvent;
 import attendance_system.TemplateForm;
 
 /*
- * @ UpdateEmployeeForm represent the Form which is in charge for allow to modify employee's data.
+ * @UpdateEmployeeForm represent the Form which is in charge for allow to modify employee's data.
  */
 public class DeleteEmployeeForm extends TemplateForm {
 
@@ -197,9 +197,6 @@ public class DeleteEmployeeForm extends TemplateForm {
 		getContentPane().add(content_pane );
 		
 		
-		
-		
-        // Reorganize the embedded components
 		pack();	
 	}
 	
@@ -207,7 +204,7 @@ public class DeleteEmployeeForm extends TemplateForm {
 	/**
 	 * @saveUser 
 	 * updates current employee's information with  the information filled up in the form by the user
-	 */
+	*/
 	public void saveUser(){
 		
 		

@@ -17,28 +17,22 @@ import com.attendance.models.Business;
 import com.attendance.models.Employee;
 import com.attendance.services.RESTServiceDirectory;
 import com.attendance.views.DeleteEmployeeForm;
+import com.attendance.views.MainUI;
 import com.attendance.views.NewEmployeeForm;
 import com.attendance.views.UpdateEmployeeForm;
 
 import attendance_system.ApacheHttpClientPost;
-import attendance_system.MainUI;
 import attendance_system.TemplateForm;
 
 /**
- * @author Jose Luis Munoz Aricapa
- * * According to GRASP patterns, applying MVC pattern
- */
+* @author Jose Luis Munoz Aricapa
+* According to GRASP patterns, applying MVC pattern
+*/
 public class EmployeeController {
-	
 	
 	
 	private TemplateForm form; 
 	private MainUI mainUI;
-	
-	
-	
-	
-	
 	
 	/**
 	 * @newEmployeeForm: shows the Form to create a new Employee

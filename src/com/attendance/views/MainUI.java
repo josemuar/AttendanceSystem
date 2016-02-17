@@ -1,4 +1,4 @@
-package attendance_system;
+package com.attendance.views;
 
 import java.awt.EventQueue;
 
@@ -14,7 +14,6 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 
-import com.attendance.views.NewEmployeeForm;
 import com.attendance.controller.EmployeeController;
 import com.attendance.services.RESTServiceDirectory;
 import com.attendance.tools.ButtonEditor;
@@ -133,6 +132,9 @@ public class MainUI {
 		});
 		
 		mnUser.add(mntmNewUser);
+		
+		JMenuItem mntmReader = new JMenuItem("Reader");
+		mnUser.add(mntmReader);
 		
 		JMenu mnTag = new JMenu("Tag");
 		menuBar.add(mnTag);

@@ -48,7 +48,7 @@ import java.awt.event.FocusEvent;
 import attendance_system.TemplateForm;
 
 /*
- * @ UpdateEmployeeForm represent the Form which is in charge for allow to modify employee's data.
+ * @UpdateEmployeeForm represent the Form which is in charge for allow to modify employee's data.
  */
 public class UpdateEmployeeForm extends TemplateForm {
 
