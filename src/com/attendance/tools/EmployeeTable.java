@@ -121,6 +121,11 @@ public class EmployeeTable extends JTable {
 				
 				this.setModel(model);				
 			}
+			else
+			{
+				model = new JTableModel( 1 );				
+				this.setModel(model);
+			}
 		}
 		
 		catch( ClientProtocolException e )
